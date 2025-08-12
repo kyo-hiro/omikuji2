@@ -2,125 +2,155 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>おみくじアプリ</title>
+<title>ノベルティくじ</title>
 <style>
   body {
     font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
     text-align: center;
-    margin-top: 50px;
-    transition: background-color 0.5s ease;
+    padding: 50px;
+    color: #4a148c;
   }
   h1 {
-    font-size: 2em;
+    font-size: 2.5em;
     margin-bottom: 30px;
+    color: #ad1457;
+  }
+  .card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    display: inline-block;
+    width: 300px;
+    transition: transform 0.3s;
+  }
+  .card:hover {
+    transform: scale(1.05);
   }
   button {
-    padding: 10px 20px;
+    background: linear-gradient(45deg, #ec407a, #f48fb1);
+    color: white;
     font-size: 1.2em;
-    cursor: pointer;
-    background-color: #ff6347;
     border: none;
     border-radius: 8px;
-    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.3s;
   }
   button:hover {
-    background-color: #e5533d;
+    background: linear-gradient(45deg, #d81b60, #f06292);
   }
   #result {
-    margin-top: 30px;
-    font-size: 2.5em;
+    font-size: 2em;
     font-weight: bold;
-  }
-  #message {
     margin-top: 20px;
-    font-size: 1.2em;
-    color: #333;
+    opacity: 0;
+    transition: opacity 0.5s ease;
   }
-  #image {
-    margin-top: 20px;
+  #prizeImage {
     width: 150px;
     height: auto;
+    margin-top: 15px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  #history {
+    margin-top: 40px;
+    background: rgba(255,255,255,0.8);
+    padding: 15px;
+    border-radius: 10px;
+    display: inline-block;
+    text-align: left;
+  }
+  #history h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  #history ul {
+    padding-left: 20px;
+    list-style: none;
+  }
+  #history li {
+    margin-bottom: 5px;
   }
 </style>
 </head>
 <body>
 
-<h1>おみくじ</h1>
-<button onclick="drawOmikuji()">引く！</button>
+<h1>ノベルティくじ</h1>
+<div class="card">
+  <p>ご購入ありがとうございます🎁<br>ボタンを押してくじを引いてください。</p>
+  <button onclick="drawPrize()">くじを引く</button>
+  <div id="result"></div>
+  <img id="prizeImage" src="" alt="">
+</div>
 
-<div id="result"></div>
-<img id="image" src="" alt="" style="display:none;">
-<div id="message"></div>
-
-<!-- 効果音 -->
-<audio id="sound-daikichi" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-<audio id="sound-chuukichi" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
-<audio id="sound-shoukichi" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"></audio>
-<audio id="sound-suekichi" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"></audio>
+<div id="history">
+  <h2>抽選履歴</h2>
+  <ul id="historyList"></ul>
+</div>
 
 <script>
-function drawOmikuji() {
-  const fortunes = [
-    { 
-      text: "大吉", 
-      color: "red", 
-      bgColor: "#ffe4e1", 
-      img: "https://i.imgur.com/jQ7PcdU.png", 
-      msg: "今日は最高の一日になりそう！行動力UP！", 
-      soundId: "sound-daikichi"
-    },
-    { 
-      text: "中吉", 
-      color: "orange", 
-      bgColor: "#fff5e6", 
-      img: "https://i.imgur.com/9sz0V0L.png", 
-      msg: "まずまず順調。チャンスを逃さないで！", 
-      soundId: "sound-chuukichi"
-    },
-    { 
-      text: "小吉", 
-      color: "green", 
-      bgColor: "#e6ffe6", 
-      img: "https://i.imgur.com/f4eZyXb.png", 
-      msg: "小さな幸せに気づける日です。感謝を忘れずに。", 
-      soundId: "sound-shoukichi"
-    },
-    { 
-      text: "末吉", 
-      color: "blue", 
-      bgColor: "#e6f0ff", 
-      img: "https://i.imgur.com/7k6V76B.png", 
-      msg: "焦らずコツコツ進めましょう。", 
-      soundId: "sound-suekichi"
-    }
-  ];
+const prizes = [
+  { name: "A賞", color: "#d81b60", img: "https://i.imgur.com/hjD6gFp.png", msg: "高級コスメセット🎀" },
+  { name: "B賞", color: "#8e24aa", img: "https://i.imgur.com/SZcVzj2.png", msg: "スペシャルハンドクリーム👐" },
+  { name: "C賞", color: "#3949ab", img: "https://i.imgur.com/xvZZhYy.png", msg: "リップスティック💄" },
+  { name: "D賞", color: "#00897b", img: "https://i.imgur.com/k59QnGw.png", msg: "化粧ポーチ👜" }
+];
 
-  const randomIndex = Math.floor(Math.random() * fortunes.length);
-  const selected = fortunes[randomIndex];
-
-  // 要素取得
+function drawPrize() {
+  const randomIndex = Math.floor(Math.random() * prizes.length);
+  const prize = prizes[randomIndex];
+  
   const resultEl = document.getElementById("result");
-  const imageEl = document.getElementById("image");
-  const messageEl = document.getElementById("message");
+  const imgEl = document.getElementById("prizeImage");
 
-  // 表示更新
-  resultEl.textContent = selected.text;
-  resultEl.style.color = selected.color;
-  imageEl.src = selected.img;
-  imageEl.style.display = "block";
-  messageEl.textContent = selected.msg;
+  // 結果表示の初期化
+  resultEl.style.opacity = 0;
+  imgEl.style.opacity = 0;
 
-  // 背景色変更
-  document.body.style.backgroundColor = selected.bgColor;
+  setTimeout(() => {
+    resultEl.textContent = `${prize.name} - ${prize.msg}`;
+    resultEl.style.color = prize.color;
+    resultEl.style.opacity = 1;
 
-  // 効果音再生（他の音を停止）
-  document.querySelectorAll("audio").forEach(audio => {
-    audio.pause();
-    audio.currentTime = 0;
-  });
-  document.getElementById(selected.soundId).play();
+    imgEl.src = prize.img;
+    imgEl.style.opacity = 1;
+
+    saveHistory(prize);
+  }, 200);
 }
+
+function saveHistory(prize) {
+  const now = new Date();
+  const dateStr = now.toLocaleString("ja-JP");
+  const entry = `${dateStr} - ${prize.name} (${prize.msg})`;
+
+  let history = JSON.parse(localStorage.getItem("prizeHistory")) || [];
+  history.unshift(entry); // 最新を先頭に
+  if (history.length > 10) history.pop(); // 最大10件まで
+  localStorage.setItem("prizeHistory", JSON.stringify(history));
+
+  renderHistory();
+}
+
+function renderHistory() {
+  const historyListEl = document.getElementById("historyList");
+  historyListEl.innerHTML = "";
+  const history = JSON.parse(localStorage.getItem("prizeHistory")) || [];
+  history.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    historyListEl.appendChild(li);
+  });
+}
+
+// 初期表示
+renderHistory();
 </script>
 
 </body>
 </html>
+
