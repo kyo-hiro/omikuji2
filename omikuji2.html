@@ -2,155 +2,63 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>ノベルティくじ</title>
+<title>抽選履歴</title>
 <style>
   body {
     font-family: "Hiragino Kaku Gothic ProN", sans-serif;
     background: linear-gradient(135deg, #fce4ec, #f8bbd0);
     text-align: center;
-    padding: 50px;
+    padding: 40px;
     color: #4a148c;
   }
   h1 {
-    font-size: 2.5em;
-    margin-bottom: 30px;
+    font-size: 2em;
+    margin-bottom: 20px;
     color: #ad1457;
   }
-  .card {
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    display: inline-block;
-    width: 300px;
-    transition: transform 0.3s;
-  }
-  .card:hover {
-    transform: scale(1.05);
-  }
-  button {
-    background: linear-gradient(45deg, #ec407a, #f48fb1);
-    color: white;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background 0.3s;
-  }
-  button:hover {
-    background: linear-gradient(45deg, #d81b60, #f06292);
-  }
-  #result {
-    font-size: 2em;
-    font-weight: bold;
-    margin-top: 20px;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  #prizeImage {
-    width: 150px;
-    height: auto;
-    margin-top: 15px;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  #history {
-    margin-top: 40px;
+  ul {
     background: rgba(255,255,255,0.8);
-    padding: 15px;
-    border-radius: 10px;
-    display: inline-block;
-    text-align: left;
-  }
-  #history h2 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-  }
-  #history ul {
-    padding-left: 20px;
+    backdrop-filter: blur(10px);
     list-style: none;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 500px;
+    margin: auto;
+    text-align: left;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   }
-  #history li {
-    margin-bottom: 5px;
+  li {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  a {
+    display: inline-block;
+    margin-top: 20px;
+    color: #880e4f;
+    text-decoration: none;
+    font-weight: bold;
   }
 </style>
 </head>
 <body>
 
-<h1>ノベルティくじ</h1>
-<div class="card">
-  <p>ご購入ありがとうございます🎁<br>ボタンを押してくじを引いてください。</p>
-  <button onclick="drawPrize()">くじを引く</button>
-  <div id="result"></div>
-  <img id="prizeImage" src="" alt="">
-</div>
-
-<div id="history">
-  <h2>抽選履歴</h2>
-  <ul id="historyList"></ul>
-</div>
+<h1>抽選履歴</h1>
+<ul id="historyList"></ul>
+<a href="index.html">⬅ くじ引きに戻る</a>
 
 <script>
-const prizes = [
-  { name: "A賞", color: "#d81b60", img: "https://i.imgur.com/hjD6gFp.png", msg: "高級コスメセット🎀" },
-  { name: "B賞", color: "#8e24aa", img: "https://i.imgur.com/SZcVzj2.png", msg: "スペシャルハンドクリーム👐" },
-  { name: "C賞", color: "#3949ab", img: "https://i.imgur.com/xvZZhYy.png", msg: "リップスティック💄" },
-  { name: "D賞", color: "#00897b", img: "https://i.imgur.com/k59QnGw.png", msg: "化粧ポーチ👜" }
-];
-
-function drawPrize() {
-  const randomIndex = Math.floor(Math.random() * prizes.length);
-  const prize = prizes[randomIndex];
-  
-  const resultEl = document.getElementById("result");
-  const imgEl = document.getElementById("prizeImage");
-
-  // 結果表示の初期化
-  resultEl.style.opacity = 0;
-  imgEl.style.opacity = 0;
-
-  setTimeout(() => {
-    resultEl.textContent = `${prize.name} - ${prize.msg}`;
-    resultEl.style.color = prize.color;
-    resultEl.style.opacity = 1;
-
-    imgEl.src = prize.img;
-    imgEl.style.opacity = 1;
-
-    saveHistory(prize);
-  }, 200);
-}
-
-function saveHistory(prize) {
-  const now = new Date();
-  const dateStr = now.toLocaleString("ja-JP");
-  const entry = `${dateStr} - ${prize.name} (${prize.msg})`;
-
-  let history = JSON.parse(localStorage.getItem("prizeHistory")) || [];
-  history.unshift(entry); // 最新を先頭に
-  if (history.length > 10) history.pop(); // 最大10件まで
-  localStorage.setItem("prizeHistory", JSON.stringify(history));
-
-  renderHistory();
-}
-
 function renderHistory() {
   const historyListEl = document.getElementById("historyList");
-  historyListEl.innerHTML = "";
   const history = JSON.parse(localStorage.getItem("prizeHistory")) || [];
+  historyListEl.innerHTML = "";
   history.forEach(item => {
     const li = document.createElement("li");
     li.textContent = item;
     historyListEl.appendChild(li);
   });
 }
-
-// 初期表示
 renderHistory();
 </script>
 
 </body>
 </html>
-
