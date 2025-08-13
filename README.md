@@ -3,52 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ノベルティくじ</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts（モダンな日本語＆英字） -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <title>ホテル予約フォーム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+        header {
+            background: #007bff;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav {
+            background: #0056b3;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0.5rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            max-width: 900px;
+            margin: auto;
+            padding: 1rem;
+            background: #fff;
+        }
+        section {
+            margin-bottom: 2rem;
+        }
+        footer {
+            background: #343a40;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        input, select, textarea, button {
+            padding: 0.6rem;
+            font-size: 1rem;
+        }
+        button {
+            background: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .success-message {
+            color: green;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <!-- ===== ヘッダー ===== -->
-    <header class="header">
-        <div class="logo">ノベルティくじ</div>
-        <nav class="nav">
-            <a href="history.html" class="history-link">📜 履歴を見る</a>
-        </nav>
+    <header>
+        <h1>ホテル予約フォーム</h1>
+        <p>シンプルで使いやすい予約ページ</p>
     </header>
-
-    <!-- ===== メインコンテンツ ===== -->
-    <main class="main">
-        <!-- 説明文 -->
-        <section class="intro">
-            <h1>ご購入ありがとうございます</h1>
-            <p>ボタンを押してくじを引いてください。</p>
-            <small>※ノベルティは数量限定です</small>
+    <nav>
+        <a href="#about">ホテル紹介</a>
+        <a href="#rooms">部屋タイプ</a>
+        <a href="#reservation">予約フォーム</a>
+    </nav>
+    <main>
+        <section id="about">
+            <h2>ホテル紹介</h2>
+            <p>当ホテルは市内中心部に位置し、快適なお部屋と最高のサービスをご提供します。</p>
         </section>
-
-        <!-- 抽選ボタン -->
-        <section class="draw-section">
-            <button id="drawButton" class="draw-button">くじを引く</button>
+        <section id="rooms">
+            <h2>部屋タイプ</h2>
+            <ul>
+                <li>シングルルーム</li>
+                <li>ダブルルーム</li>
+                <li>スイートルーム</li>
+            </ul>
         </section>
-
-        <!-- 結果表示エリア -->
-        <section id="result" class="result hidden">
-            <h2 id="prizeName" class="prize-name"></h2>
-            <p id="prizeDescription" class="prize-description"></p>
-            <img id="prizeImage" src="" alt="賞の画像" class="prize-image">
-            <button id="retryButton" class="retry-button">もう一度引く</button>
+        <section id="reservation">
+            <h2>予約フォーム</h2>
+            <form id="bookingForm">
+                <label>お名前 <input type="text" id="name" required></label>
+                <label>メールアドレス <input type="email" id="email" required></label>
+                <label>チェックイン日 <input type="date" id="checkin" required></label>
+                <label>チェックアウト日 <input type="date" id="checkout" required></label>
+                <label>部屋タイプ
+                    <select id="roomType" required>
+                        <option value="">選択してください</option>
+                        <option value="single">シングル</option>
+                        <option value="double">ダブル</option>
+                        <option value="suite">スイート</option>
+                    </select>
+                </label>
+                <label>その他ご要望 <textarea id="requests" rows="3"></textarea></label>
+                <button type="submit">予約する</button>
+                <p class="success-message" id="successMessage">ご予約を承りました！</p>
+            </form>
         </section>
     </main>
-
-    <!-- ===== フッター ===== -->
-    <footer class="footer">
-        <p>© 2025 Cosmetic Store</p>
-        <div class="social-links">
-            <a href="#" aria-label="Instagram">📷</a>
-            <a href="#" aria-label="LINE">💬</a>
-        </div>
+    <footer>
+        <p>&copy; 2025 ホテル予約システム</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("bookingForm");
+            const successMessage = document.getElementById("successMessage");
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                // 入力チェック
+                const name = document.getElementById("name").value.trim();
+                const email = document.getElementById("email").value.trim();
+                const checkin = document.getElementById("checkin").value;
+                const checkout = document.getElementById("checkout").value;
+                const roomType = document.getElementById("roomType").value;
+
+                if (!name || !email || !checkin || !checkout || !roomType) {
+                    alert("全ての必須項目を入力してください。");
+                    return;
+                }
+
+                if (new Date(checkin) >= new Date(checkout)) {
+                    alert("チェックアウト日はチェックイン日より後の日付を選択してください。");
+                    return;
+                }
+
+                // 仮の送信処理
+                successMessage.style.display = "block";
+                form.reset();
+
+                // ページ上部へスクロール
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+        });
+    </script>
 </body>
 </html>
+
