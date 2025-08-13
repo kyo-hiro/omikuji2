@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -15,6 +13,13 @@
             padding: 0;
             background-color: #fff;
             text-align: center;
+        }
+        /* 線を全て非表示 */
+        hr {
+            display: none;
+        }
+        * {
+            border: none !important;
         }
         .header {
             display: flex;
@@ -43,6 +48,7 @@
         .intro p {
             font-size: 1.1rem;
             color: #555;
+            margin-top: 0; /* 不要な間隔削除 */
         }
         .draw-button, .retry-button {
             background-color: #ff6f91;
@@ -138,39 +144,13 @@
     </footer>
 
     <script>
-        // 賞データ定義
         const prizes = [
-            {
-                name: "A賞",
-                description: "高級コスメセット🎀",
-                image: "images/a.png",
-                bgColor: "#f8c8dc", // ピンク系
-                sound: "sounds/a.mp3"
-            },
-            {
-                name: "B賞",
-                description: "保湿クリーム＆ローションセット💧",
-                image: "images/b.png",
-                bgColor: "#c8e6f8", // 水色系
-                sound: "sounds/b.mp3"
-            },
-            {
-                name: "C賞",
-                description: "リップ＆チークセット💄",
-                image: "images/c.png",
-                bgColor: "#f8e1c8", // ベージュ系
-                sound: "sounds/c.mp3"
-            },
-            {
-                name: "D賞",
-                description: "ハンドクリーム👐",
-                image: "images/d.png",
-                bgColor: "#e0f8c8", // グリーン系
-                sound: "sounds/d.mp3"
-            }
+            { name: "A賞", description: "高級コスメセット🎀", image: "images/a.png", bgColor: "#f8c8dc", sound: "sounds/a.mp3" },
+            { name: "B賞", description: "保湿クリーム＆ローションセット💧", image: "images/b.png", bgColor: "#c8e6f8", sound: "sounds/b.mp3" },
+            { name: "C賞", description: "リップ＆チークセット💄", image: "images/c.png", bgColor: "#f8e1c8", sound: "sounds/c.mp3" },
+            { name: "D賞", description: "ハンドクリーム👐", image: "images/d.png", bgColor: "#e0f8c8", sound: "sounds/d.mp3" }
         ];
 
-        // HTML要素取得
         const drawButton = document.getElementById("drawButton");
         const retryButton = document.getElementById("retryButton");
         const resultSection = document.getElementById("result");
@@ -178,54 +158,36 @@
         const prizeDescriptionEl = document.getElementById("prizeDescription");
         const prizeImageEl = document.getElementById("prizeImage");
 
-        // 抽選ボタンイベント
         drawButton.addEventListener("click", () => {
             const prize = getRandomPrize();
             showResult(prize);
             saveHistory(prize);
         });
 
-        // もう一度引くボタン
         retryButton.addEventListener("click", () => {
             resultSection.classList.add("hidden");
             document.body.style.backgroundColor = "#fff";
         });
 
-        // ランダム抽選関数
         function getRandomPrize() {
-            const index = Math.floor(Math.random() * prizes.length);
-            return prizes[index];
+            return prizes[Math.floor(Math.random() * prizes.length)];
         }
 
-        // 結果表示
         function showResult(prize) {
             prizeNameEl.textContent = prize.name;
             prizeDescriptionEl.textContent = prize.description;
             prizeImageEl.src = prize.image;
             prizeImageEl.alt = prize.name;
-            
-            // 背景色変更
             document.body.style.backgroundColor = prize.bgColor;
-
-            // 効果音再生
-            const audio = new Audio(prize.sound);
-            audio.play();
-
-            // フェードイン表示
+            new Audio(prize.sound).play();
             resultSection.classList.remove("hidden");
             resultSection.classList.add("fade-in");
         }
 
-        // 履歴保存
         function saveHistory(prize) {
             const history = JSON.parse(localStorage.getItem("lotteryHistory")) || [];
             const timestamp = new Date().toLocaleString("ja-JP");
-            history.unshift({
-                date: timestamp,
-                name: prize.name,
-                description: prize.description,
-                image: prize.image
-            });
+            history.unshift({ date: timestamp, name: prize.name, description: prize.description, image: prize.image });
             localStorage.setItem("lotteryHistory", JSON.stringify(history));
         }
     </script>
