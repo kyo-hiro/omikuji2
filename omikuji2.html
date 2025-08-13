@@ -15,12 +15,8 @@
             text-align: center;
         }
         /* 線を全て非表示 */
-        hr {
-            display: none;
-        }
-        * {
-            border: none !important;
-        }
+        hr { display: none; }
+        * { border: none !important; }
         .header {
             display: flex;
             justify-content: space-between;
@@ -48,7 +44,7 @@
         .intro p {
             font-size: 1.1rem;
             color: #555;
-            margin-top: 0; /* 不要な間隔削除 */
+            margin-top: 0;
         }
         .draw-button, .retry-button {
             background-color: #ff6f91;
@@ -97,9 +93,7 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -113,19 +107,16 @@
 
     <!-- ===== メインコンテンツ ===== -->
     <main class="main">
-        <!-- 説明文 -->
         <section class="intro">
             <h1>ご購入ありがとうございます</h1>
             <p>ボタンを押してくじを引いてください。</p>
             <small>※ノベルティは数量限定です</small>
         </section>
 
-        <!-- 抽選ボタン -->
         <section class="draw-section">
             <button id="drawButton" class="draw-button">くじを引く</button>
         </section>
 
-        <!-- 結果表示エリア -->
         <section id="result" class="result hidden">
             <h2 id="prizeName" class="prize-name"></h2>
             <p id="prizeDescription" class="prize-description"></p>
@@ -145,10 +136,10 @@
 
     <script>
         const prizes = [
-            { name: "A賞", description: "高級コスメセット🎀", image: "images/a.png", bgColor: "#f8c8dc", sound: "sounds/a.mp3" },
-            { name: "B賞", description: "保湿クリーム＆ローションセット💧", image: "images/b.png", bgColor: "#c8e6f8", sound: "sounds/b.mp3" },
-            { name: "C賞", description: "リップ＆チークセット💄", image: "images/c.png", bgColor: "#f8e1c8", sound: "sounds/c.mp3" },
-            { name: "D賞", description: "ハンドクリーム👐", image: "images/d.png", bgColor: "#e0f8c8", sound: "sounds/d.mp3" }
+            { name: "A賞", description: "高級コスメセット🎀", image: "images/a.png", sound: "sounds/a.mp3" },
+            { name: "B賞", description: "保湿クリーム＆ローションセット💧", image: "images/b.png", sound: "sounds/b.mp3" },
+            { name: "C賞", description: "リップ＆チークセット💄", image: "images/c.png", sound: "sounds/c.mp3" },
+            { name: "D賞", description: "ハンドクリーム👐", image: "images/d.png", sound: "sounds/d.mp3" }
         ];
 
         const drawButton = document.getElementById("drawButton");
@@ -166,7 +157,6 @@
 
         retryButton.addEventListener("click", () => {
             resultSection.classList.add("hidden");
-            document.body.style.backgroundColor = "#fff";
         });
 
         function getRandomPrize() {
@@ -178,7 +168,6 @@
             prizeDescriptionEl.textContent = prize.description;
             prizeImageEl.src = prize.image;
             prizeImageEl.alt = prize.name;
-            document.body.style.backgroundColor = prize.bgColor;
             new Audio(prize.sound).play();
             resultSection.classList.remove("hidden");
             resultSection.classList.add("fade-in");
